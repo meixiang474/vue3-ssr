@@ -3,17 +3,17 @@ import { createApp } from "vue";
 import App from "@/App";
 import createRouter from "@/router";
 import { Router } from "vue-router";
-import createStore from "@/store";
+import { store } from "./store";
 import { Store } from "vuex";
+import { RootState } from "@/typings";
 
 const render = (
   Component: any,
   createRouter: () => Router,
-  createStore: () => Store<any>
+  store: Store<RootState>
 ) => {
   const app = createApp(Component);
   const router = createRouter();
-  const store = createStore();
   app.use(router);
   app.use(store);
   router.isReady().then(() => {
@@ -21,7 +21,7 @@ const render = (
   });
 };
 
-render(App, createRouter, createStore);
+render(App, createRouter, store);
 
 if ((module as any).hot) {
   (module as any).hot.accept(
@@ -29,8 +29,8 @@ if ((module as any).hot) {
     () => {
       const NextApp = require("@/App.tsx").default;
       const nextCreateRouter = require("@/router").default;
-      const nextCreateStore = require("@/store/index");
-      render(NextApp, nextCreateRouter, nextCreateStore);
+      const nextStore = require("./store").store;
+      render(NextApp, nextCreateRouter, nextStore);
     }
   );
 }

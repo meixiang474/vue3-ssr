@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@vue/server-renderer": "^3.0.11",
+    "axios": "^0.21.1",
     "express": "^4.17.1",
     "express-http-proxy": "^1.6.2",
     "vue": "^3.0.11",

@@ -5,6 +5,7 @@ import { createSSRApp } from "vue";
 import createRouter from "@/router";
 import createStore from "@/store";
 import { renderToString } from "@vue/server-renderer";
+import createServerRequest from "./request";
 
 const app = express();
 
@@ -15,7 +16,8 @@ if (SSR) {
   app.get("*", async (req, res) => {
     const app = createSSRApp(App);
     const router = createRouter();
-    const store = createStore();
+    const request = createServerRequest(req);
+    const store = createStore(request);
     app.use(router);
     app.use(store);
     router.push(req.url);
