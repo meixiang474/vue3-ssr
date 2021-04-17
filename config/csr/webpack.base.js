@@ -1,6 +1,6 @@
 const webpack = require("webpack");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   devtool: "eval-cheap-module-source-map",
@@ -89,8 +89,6 @@ module.exports = {
               name: "[contenthash:10].[ext]",
               esModule: false,
               limit: 8 * 1024,
-              outputPath: "../assets",
-              publicPath: "/",
             },
           },
         ],
@@ -153,14 +151,14 @@ module.exports = {
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    new MiniCssExtractPlugin({
-      filename: "[name].css",
-    }),
     new webpack.ProvidePlugin({
       React: "react",
     }),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+    }),
     new webpack.DefinePlugin({
-      SSR: true,
+      SSR: false,
       __VUE_OPTIONS_API__: false,
       __VUE_PROD_DEVTOOLS__: false,
     }),

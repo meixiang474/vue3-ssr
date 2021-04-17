@@ -1,3 +1,4 @@
+import { Router } from "vue-router";
 import {
   createRouter,
   createMemoryHistory,
@@ -9,6 +10,6 @@ const isServer = typeof window === "undefined";
 
 const history = isServer ? createMemoryHistory() : createWebHistory();
 
-export default () => {
+export default (): Router => {
   return createRouter({ routes, history });
 };

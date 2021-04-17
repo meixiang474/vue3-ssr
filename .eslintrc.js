@@ -16,5 +16,7 @@ module.exports = {
     //
     // myGlobal: false
   },
-  rules: {},
+  rules: {
+    "@typescript-eslint/no-explicit-any": "off",
+  },
 };
