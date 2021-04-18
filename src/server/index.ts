@@ -6,8 +6,21 @@ import createRouter from "@/router";
 import createStore from "@/store";
 import { renderToString } from "@vue/server-renderer";
 import createServerRequest from "./request";
+import fs from "fs";
+import { parallel } from "@/utils";
+import proxy from "express-http-proxy";
+import { HOST } from "@/api";
 
 const app = express();
+
+app.use(
+  "/ssr/api",
+  proxy(HOST, {
+    proxyReqPathResolver: (req) => {
+      return "/ssr/spi" + req.url;
+    },
+  })
+);
 
 if (SSR) {
   app.use(express.static(path.join(__dirname, "..", "public")));
@@ -22,11 +35,39 @@ if (SSR) {
     app.use(store);
     router.push(req.url);
     await router.isReady();
-    const matchedComponents = router
-      .getRoutes()
-      .map((route) => route.components.default);
-    console.log(matchedComponents);
+    const matchedComponents: any[] = router.currentRoute.value.matched.map(
+      (item) => item.components.default
+    );
+    const asyncDataPromises: Promise<any>[] = [];
+    matchedComponents.forEach((item) => {
+      if (item.asyncData) {
+        const promise = new Promise((resolve) => {
+          item.asyncData(store).then(resolve, resolve);
+        });
+        asyncDataPromises.push(promise);
+      }
+    });
+    await Promise.all(asyncDataPromises);
     const appContent = await renderToString(app);
+    const cssFiles = (
+      await fs.promises.readdir(path.join(__dirname, "../public"))
+    ).filter((item) => path.extname(item) === ".css");
+    cssFiles.sort((a) => {
+      if (a === "vendors.css") {
+        return -1;
+      }
+      if (a === "index.css") {
+        return 1;
+      }
+      return 0;
+    });
+    const promises = cssFiles.map((file) => {
+      const filepath = path.join(__dirname, "../public", file);
+      return fs.promises.readFile(filepath, "utf-8");
+    });
+    const csses = await parallel(promises);
+
+    const styles = csses.join("\r\n");
     res.send(`
     <!DOCTYPE html>
     <html lang="en">
@@ -36,7 +77,11 @@ if (SSR) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
+        <style>${styles}</style>
         <script>
+          window.context = {
+            state: ${JSON.stringify(store.state)}
+          }
           /** function setRemUnit() {
             let fontSize = window.innerWidth / 10;
             fontSize = fontSize > 50 ? 50 : fontSize;

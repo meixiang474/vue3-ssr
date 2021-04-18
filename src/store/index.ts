@@ -10,5 +10,8 @@ export default (request: AxiosInstance): Store<RootState> => {
   const store = createStore({
     modules: { home, cancel },
   });
+  if (typeof window != "undefined") {
+    store.replaceState(window.context.state);
+  }
   return store;
 };
