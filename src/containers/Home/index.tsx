@@ -1,5 +1,5 @@
 import { RootState } from "@/typings";
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { useStore, Store } from "vuex";
 import { RouteLocationNormalizedLoaded } from "vue-router";
 import * as Types from "@/store/constants";
@@ -15,6 +15,9 @@ const Home = defineComponent({
     });
     const test = computed(() => {
       return store.state.home.test;
+    });
+    onMounted(() => {
+      store.dispatch(`home/${Types.CHANGE_TEST}`);
     });
     return () => {
       return (
