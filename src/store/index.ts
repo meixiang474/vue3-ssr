@@ -11,6 +11,8 @@ export default (request: AxiosInstance): Store<RootState> => {
     modules: { home, cancel },
   });
   if (typeof window != "undefined") {
+    console.log(1);
+    console.log(window.context.state);
     store.replaceState(window.context.state);
   }
   return store;

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { query } from "express";
 import path from "path";
 import App from "@/App";
 import { createSSRApp } from "vue";
@@ -36,13 +36,17 @@ if (SSR) {
     router.push(req.url);
     await router.isReady();
     const matchedComponents: any[] = router.currentRoute.value.matched.map(
-      (item) => item.components.default
+      (item) => {
+        return item.components.default;
+      }
     );
     const asyncDataPromises: Promise<any>[] = [];
     matchedComponents.forEach((item) => {
       if (item.asyncData) {
         const promise = new Promise((resolve) => {
-          item.asyncData(store).then(resolve, resolve);
+          item
+            .asyncData(store, router.currentRoute.value)
+            .then(resolve, resolve);
         });
         asyncDataPromises.push(promise);
       }
