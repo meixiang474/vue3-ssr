@@ -1,4 +1,4 @@
-import express, { query } from "express";
+import express from "express";
 import path from "path";
 import App from "@/App";
 import { createSSRApp } from "vue";
