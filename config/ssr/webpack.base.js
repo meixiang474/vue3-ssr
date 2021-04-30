@@ -1,11 +1,12 @@
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
+const { VueLoaderPlugin } = require("vue-loader");
 
 module.exports = {
   devtool: "eval-cheap-module-source-map",
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".less"],
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".less", ".vue"],
     alias: {
       "@": path.join(__dirname, "../../src"),
     },
@@ -44,6 +45,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.vue$/,
+        use: ["vue-loader"],
+      },
+      {
         test: /\.(t|j)sx?$/,
         use: [
           {
@@ -67,16 +72,17 @@ module.exports = {
                     },
                   },
                 ],
+                ["@babel/preset-typescript"],
               ],
               plugins: [["@vue/babel-plugin-jsx"]],
             },
           },
-          {
-            loader: "ts-loader",
-            options: {
-              allowTsInNodeModules: true,
-            },
-          },
+          // {
+          //   loader: "ts-loader",
+          //   options: {
+          //     allowTsInNodeModules: true,
+          //   },
+          // },
         ],
         exclude: /node_modules/,
       },
@@ -164,5 +170,6 @@ module.exports = {
       __VUE_OPTIONS_API__: false,
       __VUE_PROD_DEVTOOLS__: false,
     }),
+    new VueLoaderPlugin(),
   ],
 };
