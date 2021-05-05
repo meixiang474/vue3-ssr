@@ -6,7 +6,7 @@ const { VueLoaderPlugin } = require("vue-loader");
 module.exports = {
   devtool: "eval-cheap-module-source-map",
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".less"],
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".less", ".vue"],
     alias: {
       "@": path.join(__dirname, "../../src"),
     },
