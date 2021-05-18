@@ -10,7 +10,7 @@ export default (request: AxiosInstance): Store<RootState> => {
   const store = createStore({
     modules: { home, cancel },
   });
-  if (typeof window != "undefined") {
+  if (typeof window != "undefined" && SSR) {
     console.log(1);
     console.log(window.context.state);
     store.replaceState(window.context.state);
