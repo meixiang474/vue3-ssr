@@ -162,9 +162,6 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "[name].css",
     }),
-    new webpack.ProvidePlugin({
-      React: "react",
-    }),
     new webpack.DefinePlugin({
       SSR: true,
       __VUE_OPTIONS_API__: false,

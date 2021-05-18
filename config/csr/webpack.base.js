@@ -157,9 +157,6 @@ module.exports = {
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    new webpack.ProvidePlugin({
-      React: "react",
-    }),
     new MiniCssExtractPlugin({
       filename: "[name].css",
     }),
